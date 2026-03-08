@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Full Spec: Faculty Website Page Builder | Villa College</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap');
+        :root { --vc-blue: #0050F2; --vc-navy: #001C55; }
+        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+        pre, code { font-family: 'Fira Code', monospace; }
+        .prose h1 { @apply text-4xl font-extrabold text-slate-900 mb-8 pb-4 border-b-4 border-blue-600; }
+        .prose h2 { @apply text-2xl font-bold text-slate-800 mt-16 mb-6 flex items-center gap-3; }
+        .prose h2::before { content: ""; @apply w-2 h-8 bg-blue-600 rounded-full; }
+        .prose h3 { @apply text-xl font-semibold text-slate-700 mt-8 mb-4; }
+        .prose p { @apply text-slate-600 leading-relaxed mb-4; }
+        .prose ul { @apply list-disc ml-6 mb-6 text-slate-600 space-y-2; }
+        .prose table { @apply w-full border-collapse mb-8 rounded-lg overflow-hidden shadow-sm; }
+        .prose th { @apply bg-slate-100 text-left p-4 text-sm font-bold text-slate-700 border border-slate-200; }
+        .prose td { @apply p-4 text-sm text-slate-600 border border-slate-200 bg-white; }
+        .prose blockquote { @apply border-l-4 border-blue-500 bg-blue-50 p-6 my-8 italic text-blue-900 rounded-r-lg; }
+        .sql-block { @apply bg-slate-900 text-slate-100 p-6 rounded-xl overflow-x-auto my-6 border-l-4 border-green-400 font-mono text-sm; }
+        .mermaid-placeholder { @apply bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl p-8 text-center my-6 flex flex-col items-center justify-center; }
+        .nav-active { @apply bg-blue-50 text-blue-700 border-r-4 border-blue-600 font-bold; }
+    </style>
+</head>
+<body class="bg-white">
+
+    <div class="lg:hidden bg-white border-b p-4 sticky top-0 z-50 flex justify-between items-center">
+        <span class="font-bold text-vc-blue">VC Faculty Spec</span>
+        <button id="menuBtn" class="p-2 text-slate-600"><i class="fas fa-bars text-xl"></i></button>
+    </div>
+
+    <div class="flex">
+        <aside id="sidebar" class="hidden lg:block fixed inset-y-0 left-0 w-72 bg-slate-50 border-r border-slate-200 overflow-y-auto z-40 transition-all">
+            <div class="p-8">
+                <div class="flex items-center gap-3 mb-10">
+                    <div class="w-10 h-10 bg-blue-600 rounded flex items-center justify-center text-white font-black">VC</div>
+                    <div>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Documentation</p>
+                        <p class="font-bold text-slate-900">Page Builder</p>
+                    </div>
+                </div>
+                
+                <nav class="space-y-1">
+                    <a href="#1-the-big-picture" class="nav-item block px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">1. The Big Picture</a>
+                    <a href="#2-why-we-chose-this-approach" class="nav-item block px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">2. Branding & Autonomy</a>
+                    <a href="#3-how-the-system-works" class="nav-item block px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">3. System Flow</a>
+                    <a href="#4-for-faculty-managers" class="nav-item block px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">4. For Managers</a>
+                    <a href="#5-available-content-blocks" class="nav-item block px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-100 rounded-lg transition-colors font-bold text-blue-600">5. BLOCK INVENTORY</a>
+                    <a href="#6-access-control--permissions" class="nav-item block px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">6. Access Control</a>
+                    <a href="#7-current-vs-proposed-system" class="nav-item block px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">7. Comparison</a>
+                    <a href="#8-technical-architecture" class="nav-item block px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">8. Technical/SQL</a>
+                    <a href="#9-content-migration-plan" class="nav-item block px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">9. Migration</a>
+                    <a href="#10-security" class="nav-item block px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">10. Security</a>
+                    <a href="#11-success-metrics" class="nav-item block px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">11. Metrics</a>
+                    <a href="#12-implementation-timeline--phases" class="nav-item block px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">12. Timeline</a>
+                    <a href="#13-risk-assessment--mitigation" class="nav-item block px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">13. Risk Assessment</a>
+                    <a href="#14-training--onboarding" class="nav-item block px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">14. Training</a>
+                    <a href="#15-glossary" class="nav-item block px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">15. Glossary</a>
+                    <a href="#16-faq" class="nav-item block px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">16. FAQ</a>
+                </nav>
+            </div>
+        </aside>
+
+        <main class="lg:ml-72 flex-1 min-h-screen px-6 py-12 lg:px-20 lg:py-24 max-w-5xl overflow-x-hidden">
+            <article class="prose max-w-none">
+                
+                <header class="mb-20">
+                    <h1 id="top">Faculty Website Page Builder — Feature Specification</h1>
+                    <blockquote>
+                        <strong>Who is this document for?</strong><br>
+                        This document is written for everyone involved in the Faculty Website project — from faculty administrators and content editors with no technical background, to the developers building and maintaining the system. Sections are clearly labelled so you can jump to what matters most to you.
+                    </blockquote>
+                </header>
+
+                <section id="1-the-big-picture">
+                    <h2>1. The Big Picture</h2>
+                    <h3>What Are We Building and Why?</h3>
+                    <p>Villa College is growing. As the number of faculties increases, so does the challenge of keeping each faculty's website accurate, up-to-date, and professionally presented. Today, any change to a faculty website — even adding a new dean's message or updating a programme list — requires a developer to step in. This creates a bottleneck: faculties wait, developers are pulled away from bigger work, and websites go stale.</p>
+                    <p><strong>The solution is to put content control in the hands of the people who know it best — the faculties themselves.</strong></p>
+                    <p>We are building a <strong>Faculty Website Page Builder</strong>: a user-friendly interface inside the Villa College admin panel that allows each faculty's designated managers to independently create, edit, and publish their own website pages — no coding required.</p>
+                    
+                    <div class="mermaid-placeholder">
+                        <i class="fas fa-project-diagram text-blue-400 text-3xl mb-4"></i>
+                        <p class="font-bold text-slate-800">[Mindmap: Faculty Website Page Builder Stakeholders]</p>
+                        <ul class="text-left text-xs text-slate-500 mt-2 list-none">
+                            <li>• Faculty Managers: Visual editing, no dev needed.</li>
+                            <li>• Developers: Maintain blocks, set up infrastructure.</li>
+                            <li>• Leadership: Brand consistency, scalability.</li>
+                        </ul>
+                    </div>
+
+                    <h3>The Problem We Are Solving</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="p-6 bg-red-50 border border-red-100 rounded-xl">
+                            <p class="font-bold text-red-800 text-sm mb-2">❌ Today's Process</p>
+                            <p class="text-xs text-red-700 leading-relaxed">Faculty needs change → Email/Call → Developer writes code → Change deployed days/weeks later → Repeat.</p>
+                        </div>
+                        <div class="p-6 bg-green-50 border border-green-100 rounded-xl">
+                            <p class="font-bold text-green-800 text-sm mb-2">✅ After This Project</p>
+                            <p class="text-xs text-green-700 leading-relaxed">Faculty Manager logs in → uses page builder → Content updated in minutes → Live immediately.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="2-why-we-chose-this-approach">
+                    <h2>2. Why We Chose This Approach</h2>
+                    <h3>Branding & Autonomy — Two Goals, One Solution</h3>
+                    <p>There is a natural tension between two important goals:</p>
+                    <ul>
+                        <li><strong>Faculty Autonomy</strong> — Each faculty should be able to manage their own content freely.</li>
+                        <li><strong>Brand Consistency</strong> — All Villa College websites must look professional and follow the college's visual identity.</li>
+                    </ul>
+                    <p>A free-form website builder (like giving everyone a blank WordPress) would enable autonomy but destroy brand consistency. Forcing everything through developers maintains brand control but kills autonomy. <strong>The page builder approach solves both at once.</strong></p>
+                    
+                    <h3>Why Filament Page Builder Specifically?</h3>
+                    <blockquote>
+                        <strong>Plain English:</strong> Think of the page builder like LEGO bricks. The college's developers design and brand the bricks — each brick (called a "block") is already styled in Villa College's colours, fonts, and visual language. Faculty managers then pick and arrange those bricks to build their page. No matter which bricks a faculty chooses or in which order they place them, the end result always looks like a Villa College website.
+                    </blockquote>
+                    <p>The key insight is this: <strong>because every block is pre-designed and pre-branded, every faculty website automatically matches the college's brand</strong> — without faculty managers needing to worry about fonts, colours, or layout rules.</p>
+                </section>
+
+                <section id="3-how-the-system-works">
+                    <h2>3. How the System Works</h2>
+                    <h3>The Overall Picture</h3>
+                    <p>The faculty website system is part of the larger Villa College website, which is built on <strong>Laravel</strong> (a web application framework) and uses <strong>FilamentPHP</strong> as the admin panel. The page builder component — <strong>FilamentFabricator</strong> — is the tool that allows non-technical users to build pages by combining content blocks.</p>
+                    
+                    <div class="mermaid-placeholder">
+                        <i class="fas fa-sitemap text-slate-400 text-2xl mb-2"></i>
+                        <p class="text-xs font-bold">[Sequence: How a Published Page Reaches the Public]</p>
+                        <p class="text-[10px] text-slate-400">Admin Panel → Database → Redis Cache Clear → Public Web Rendering</p>
+                    </div>
+                </section>
+
+                <section id="4-for-faculty-managers">
+                    <h2>4. For Faculty Managers</h2>
+                    <blockquote>🟢 This section is for you if you are a Faculty Manager — someone responsible for maintaining your faculty's website. No technical knowledge is needed to follow this guide.</blockquote>
+                    <h3>What You Can Do</h3>
+                    <table>
+                        <thead><tr><th>What You Can Do</th><th>How</th></tr></thead>
+                        <tbody>
+                            <tr><td>✅ Create a new faculty page</td><td>Page Builder → New Page</td></tr>
+                            <tr><td>✅ Edit any existing page</td><td>Page Builder → Select Page → Edit</td></tr>
+                            <tr><td>✅ Add, remove, or rearrange blocks</td><td>Drag and drop in the page builder</td></tr>
+                            <tr><td>✅ Upload images and files</td><td>Media Library</td></tr>
+                            <tr><td>✅ Preview before publishing</td><td>Preview button in page builder</td></tr>
+                            <tr><td>✅ Save a draft</td><td>Save Draft button</td></tr>
+                            <tr><td>✅ Publish and unpublish</td><td>Publish / Unpublish toggle</td></tr>
+                            <tr><td>✅ Dynamic content (News/Staff)</td><td>Dynamic content blocks</td></tr>
+                            <tr><td>❌ Edit another faculty's pages</td><td>Not permitted — access restricted</td></tr>
+                            <tr><td>❌ Change block design/branding</td><td>Managed by technical team</td></tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <section id="5-available-content-blocks">
+                    <h2>5. Available Content Blocks</h2>
+                    <p>A block is a pre-designed section of your page. You combine blocks like building bricks to create a complete page. Each block is already styled to match Villa College's brand. The blocks documented here are derived directly from the actual page designs in the faculty_website branch.</p>
+                    
+                    <h3>5.1 Faculty Website Pages & Their Sections</h3>
+                    <p>The faculty website is made up of four main pages. Each page is built from a sequence of blocks:</p>
+                    <ul>
+                        <li><strong>🏠 Faculty Home Page:</strong> FacultyHeaderBlock, FacultyAboutBlock, WhyChooseUsBlock, FacultyCIEDBlock, TestimonialsBlock, FacultyNewsBlock, FacultyCTABlock.</li>
+                        <li><strong>👥 Faculty About Page:</strong> FacultyPageHeroBlock, MissionVisionBlock, TeamBlock, ResearchCTABlock, FacultyAdvisoryBlock, AccreditationsBlock.</li>
+                        <li><strong>💡 CIED Page:</strong> FacultyPageHeroBlock, CIEDSpotlightBlock, CIEDFeaturesBlock, MentorsBlock, IdeaSubmissionCTABlock.</li>
+                        <li><strong>🎓 Student Life Page:</strong> FacultyPageHeroBlock, StudentLifeContentBlock.</li>
+                    </ul>
+
+                    <h3>5.3 Detailed Block Specifications (Word for Word)</h3>
+                    
+                    <div class="bg-slate-50 border rounded-lg p-6 mb-8">
+                        <h4 class="text-vc-blue font-bold uppercase text-xs tracking-tighter">FacultyHeaderBlock — Video Hero Header</h4>
+                        <p class="text-xs text-slate-500 mb-4 italic">Used on: Faculty Home Page (top of page, always first)</p>
+                        <p class="text-sm"><strong>What it looks like:</strong> A full-viewport-height section with a looping background video overlaid with a blue gradient, a large faculty name, tagline, and a CTA button. The faculty navigation bar sits inside this block at the top.</p>
+                        <table>
+                            <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+                            <tbody>
+                                <tr><td>Background video</td><td>File upload</td><td>.mp4 file for looping hero background</td></tr>
+                                <tr><td>Overlay colour</td><td>Colour picker</td><td>Gradient overlay colour (default: #0050F2)</td></tr>
+                                <tr><td>Watermark text</td><td>Text input</td><td>Large ghost text shown behind content</td></tr>
+                                <tr><td>Faculty name — line 1</td><td>Text input</td><td>First line (e.g. Qasim Ibrahim)</td></tr>
+                                <tr><td>Faculty name — line 2</td><td>Text input</td><td>Second line / subtitle</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="bg-slate-50 border rounded-lg p-6 mb-8">
+                        <h4 class="text-vc-blue font-bold uppercase text-xs tracking-tighter">FacultyAboutBlock — About Us with Stats & Dean's Message</h4>
+                        <p class="text-xs text-slate-500 mb-4 italic">Used on: Faculty Home Page</p>
+                        <p class="text-sm"><strong>What it looks like:</strong> A two-column section. Left side has two square stat cards plus a wide "About" text card. Right side shows the Dean's Message with photo.</p>
+                        <p class="text-xs mt-2"><strong>Fields:</strong> Eyebrow label, Section heading, Stat 1 & 2 values, Dean's message heading, Dean's message body (rich text), Dean's photo, Dean's name, Dean's title.</p>
+                    </div>
+
+                    <div class="bg-slate-50 border rounded-lg p-6 mb-8">
+                        <h4 class="text-vc-blue font-bold uppercase text-xs tracking-tighter">FacultyNewsBlock — Latest News Carousel</h4>
+                        <p class="text-sm"><strong>What it looks like:</strong> A light blue background section showing latest news as an auto-sliding carousel. Card shows cover image, date, title, and link. Pulls latest 4 posts from Post model scoped to faculty.</p>
+                    </div>
+
+                    <h3>5.5 Complete Block Inventory</h3>
+                    <table>
+                        <thead><tr><th>#</th><th>Block</th><th>Status</th><th>Page</th></tr></thead>
+                        <tbody>
+                            <tr><td>1</td><td>FacultyHeaderBlock</td><td>🆕 Build</td><td>Home</td></tr>
+                            <tr><td>2</td><td>FacultyNavBlock</td><td>🆕 Build</td><td>All</td></tr>
+                            <tr><td>8</td><td>FacultyPageHeroBlock</td><td>🆕 Build</td><td>Inner Pages</td></tr>
+                            <tr><td>10</td><td>TeamBlock</td><td>🆕 Build</td><td>About</td></tr>
+                            <tr><td>18</td><td>HeroBlock</td><td>✅ Exists</td><td>Any</td></tr>
+                            <tr><td>19</td><td>ContentBlock</td><td>✅ Exists</td><td>Any</td></tr>
+                            <tr><td>23</td><td>VideoBlock</td><td>✅ Exists</td><td>Any</td></tr>
+                            <tr><td>29</td><td>ProgramBlock</td><td>✅ Exists</td><td>Any (Auto from DB)</td></tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <section id="8-technical-architecture">
+                    <h2>8. Technical Architecture</h2>
+                    <p>🔵 This section is primarily for developers building and maintaining the system.</p>
+                    
+                    <h3>New Database Tables (SQL)</h3>
+                    <div class="sql-block">
+<pre>
+CREATE TABLE faculty_page_templates (
+    id          BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name        VARCHAR(255) NOT NULL,
+    description TEXT,
+    blocks      JSON NOT NULL, -- Default block structure as JSON
+    preview_image VARCHAR(255),
+    is_active   BOOLEAN DEFAULT TRUE,
+    created_at  TIMESTAMP NULL,
+    updated_at  TIMESTAMP NULL
+);
+
+CREATE TABLE faculty_page_permissions (
+    id              BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    user_id         BIGINT UNSIGNED NOT NULL,
+    faculty_id      BIGINT UNSIGNED NOT NULL,
+    permission_type ENUM('view','edit','publish','manage') NOT NULL,
+    created_at      TIMESTAMP NULL
+);
+</pre>
+                    </div>
+
+                    <h3>URL Routing Structure</h3>
+                    <table>
+                        <thead><tr><th>URL</th><th>What It Serves</th></tr></thead>
+                        <tbody>
+                            <tr><td>/faculties/{slug}</td><td>Default view (when no builder page exists)</td></tr>
+                            <tr><td>/faculties/{slug}/page</td><td>Custom page builder page</td></tr>
+                            <tr><td>/faculties/{slug}/news</td><td>News articles for this faculty</td></tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <section id="9-content-migration-plan">
+                    <h2>9. Content Migration Plan</h2>
+                    <p>All existing faculty content — dean's messages, summaries, carousel cards, and media — must be safely migrated into the new page builder format. No content will be lost.</p>
+                    
+                    <h3>JSON Field to Block Mapping</h3>
+                    <table>
+                        <thead><tr><th>Existing JSON Field</th><th>New Block</th><th>Migration Notes</th></tr></thead>
+                        <tbody>
+                            <tr><td>deans_message</td><td>FacultyAboutBlock</td><td>Dean photo and rich text move into sub-fields</td></tr>
+                            <tr><td>summary</td><td>ContentBlock</td><td>Short description migrates to About card</td></tr>
+                            <tr><td>carousel_cards</td><td>FacultyHeaderBlock</td><td>Images become hero background video/image</td></tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <section id="12-implementation-timeline--phases">
+                    <h2>12. Implementation Timeline</h2>
+                    <ul>
+                        <li><strong>Phase 1: Foundation (4–6 weeks):</strong> Role system, Core blocks, Migration scripts.</li>
+                        <li><strong>Phase 2: Enhancement (3–4 weeks):</strong> Advanced blocks, Template system.</li>
+                        <li><strong>Phase 3: Pilot & Launch (2–3 weeks):</strong> Pilot with 2–3 faculties, Training sessions.</li>
+                        <li><strong>Phase 4: Advanced (Ongoing):</strong> Multi-language, Analytics, Events calendar.</li>
+                    </ul>
+                </section>
+
+                <section id="15-glossary">
+                    <h2>15. Glossary</h2>
+                    <div class="grid md:grid-cols-2 gap-x-8">
+                        <div>
+                            <p><strong>Block:</strong> A self-contained section of a page pre-designed and pre-branded.</p>
+                            <p><strong>FilamentPHP:</strong> The PHP framework used to build the admin panel.</p>
+                        </div>
+                        <div>
+                            <p><strong>Slug:</strong> The URL-friendly version of a name (e.g., faculty-of-it).</p>
+                            <p><strong>XSS:</strong> A security vulnerability where malicious code is injected. System sanitises all input.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="16-faq">
+                    <h2>16. FAQ</h2>
+                    <p><strong>Q: Do I need to know how to code to manage my faculty's website?</strong><br>
+                    No. The page builder is designed for non-technical users. If you can use Word, you can use the builder.</p>
+                    
+                    <p><strong>Q: Can I break the branding?</strong><br>
+                    No. Design of blocks is controlled by devs. You control content only.</p>
+                    
+                    <p><strong>Q: What if I publish something by mistake?</strong><br>
+                    You can unpublish or save as draft at any time.</p>
+                </section>
+
+                <footer class="mt-24 pt-8 border-t border-slate-200 text-center text-slate-400 text-xs">
+                    <p>&copy; 2026 Villa College. Faculty Website Page Builder Spec. Built for GitHub Pages.</p>
+                </footer>
+
+            </article>
+        </main>
+    </div>
+
+    <script>
+        const menuBtn = document.getElementById('menuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const navItems = document.querySelectorAll('.nav-item');
+
+        menuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('hidden');
+        });
+
+        // Simple scroll spy and active state
+        window.addEventListener('scroll', () => {
+            let current = "";
+            const sections = document.querySelectorAll('section');
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 150) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navItems.forEach(item => {
+                item.classList.remove('nav-active');
+                if (item.getAttribute('href') === `#${current}`) {
+                    item.classList.add('nav-active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
